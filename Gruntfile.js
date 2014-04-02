@@ -64,7 +64,7 @@ module.exports = function (grunt) {
             },
             lib: {
                 src: ['src/*.js']
-            },
+            }
         },
         watch: {
             gruntfile: {

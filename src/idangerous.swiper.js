@@ -8,10 +8,21 @@ var Swiper = function (selector, params) {
         if (HTMLElement) {
             var element = HTMLElement.prototype;
             if (element.__defineGetter__) {
-                element.__defineGetter__('outerHTML', function () { return new XMLSerializer().serializeToString(this); });
+                if (element.__defineGetter__) {
+                    if (typeof window.Polymer === 'undefined') {
+                        element.__defineGetter__('outerHTML', function () { return new XMLSerializer().serializeToString(this); });
+                    } else {
+                        element.__defineGetter__('outerHTML', function () {
+                            var serialized =  new XMLSerializer().serializeToString(unwrap(this));
+                            wrap(this);
+                            return serialized;
+                        });
+                    }
+                }
             }
         }
     }
+
 
     if (!window.getComputedStyle) {
         window.getComputedStyle = function (el, pseudo) {
@@ -564,7 +575,7 @@ var Swiper = function (selector, params) {
         var _width = _this.h.getWidth(_this.container, false, params.roundLengths);
         var _height = _this.h.getHeight(_this.container, false, params.roundLengths);
         if (_width === _this.width && _height === _this.height && !force) return;
-        
+
         _this.width = _width;
         _this.height = _height;
 
@@ -671,7 +682,7 @@ var Swiper = function (selector, params) {
                                 _this.snapGrid.push(slideLeft);
                             }
                         }
-                            
+
                     }
                     else {
                         _this.snapGrid.push(slideLeft);
@@ -1857,7 +1868,7 @@ var Swiper = function (selector, params) {
                     else {
                         _this.fireCallback(params.onSlideChangeEnd, _this);
                     }
-                    
+
                 }
                 _this.setWrapperTranslate(newPosition);
                 _this._DOMAnimating = false;
